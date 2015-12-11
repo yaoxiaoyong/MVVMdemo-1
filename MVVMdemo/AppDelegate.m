@@ -7,9 +7,15 @@
 //
 
 #import "AppDelegate.h"
+#import "FirstViewController.h"
+#import "FirstViewModel.h"
+#import "MVVMdemoImpl.h"
+#import "MVVMdemoService.h"
 
 @interface AppDelegate ()
-
+@property (strong, nonatomic) MVVMdemoImpl *demoImpl;
+@property (strong, nonatomic) FirstViewModel *firstViewModel;
+@property (strong, nonatomic) UINavigationController *naviVC;
 @end
 
 @implementation AppDelegate
@@ -17,7 +23,24 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    [self.window makeKeyAndVisible];
+    
+    self.naviVC = [[UINavigationController alloc] init];
+    FirstViewController *firstVC = [self createViewController];
+    [self.naviVC pushViewController:firstVC animated:YES];
+    self.window.rootViewController = self.naviVC;
+    
     return YES;
+}
+
+- (FirstViewController *)createViewController
+{
+    self.demoImpl = [[MVVMdemoImpl alloc] initWithNavigationController:self.naviVC];
+    self.firstViewModel = [[FirstViewModel alloc] initWithService:self.demoImpl];
+    
+    return [[FirstViewController alloc] initWithViewModel:self.firstViewModel];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
